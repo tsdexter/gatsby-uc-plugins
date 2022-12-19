@@ -1,5 +1,103 @@
 # gatsby-plugin-fastify
 
+## 0.12.0
+
+### Minor Changes
+
+- [#321](https://github.com/gatsby-uc/plugins/pull/321) [`fa6aa14`](https://github.com/gatsby-uc/plugins/commit/fa6aa14321c3b8012528b94501c56c8f51d2b0dd) Thanks [@moonmeister](https://github.com/moonmeister)! - FEAT: Added ability to configure Fastify server options from plugin config. As a part of this effort several non-critical defaults have been changed. While debating this change it was relized these defaults were more for development ease than good production defaults.
+
+  1. Request logging is now on by default as is normal in Fastify.
+  2. Logging is no longer "pretty" when `NODE_ENV=development`.
+
+  If you'd like to restore either of the functionalities see:
+
+  ```js
+  //gatsby-config.js
+  module.exports = {
+    /* Site config */
+    plugins: [
+      /* Rest of the plugins */
+      {
+        resolve: `gatsby-plugin-fastify`,
+        /* Default option value shown */
+        options: {
+          fastify: {
+            logger: {
+              level: logLevel,
+              transport:
+                process.env.NODE_ENV === "development"
+                  ? {
+                      target: "pino-pretty",
+                      options: {
+                        translateTime: "HH:MM:ss Z",
+                        ignore: "pid,hostname",
+                      },
+                    }
+                  : undefined,
+            },
+            disableRequestLogging: ["trace", "debug"].includes(logLevel) ? false : true,
+          },
+        },
+      },
+    ],
+  };
+  ```
+
+  > To restore pretty printing you'll also need to install `pino-pretty` from npm.
+
+## 0.11.2
+
+### Patch Changes
+
+- [#319](https://github.com/gatsby-uc/plugins/pull/319) [`327f233`](https://github.com/gatsby-uc/plugins/commit/327f233beb45485e7fcbdcc2d9a2811c7d21c561) Thanks [@moonmeister](https://github.com/moonmeister)! - refactor re-export. no funcitonal changes.
+
+## 0.11.1
+
+### Patch Changes
+
+- [#317](https://github.com/gatsby-uc/plugins/pull/317) [`8fd9b57`](https://github.com/gatsby-uc/plugins/commit/8fd9b577189c98ddbacc0afb37a3cf3d756ea199) Thanks [@renovate](https://github.com/apps/renovate)! - fix(packages): update dependency fs-extra to v11
+
+- [#310](https://github.com/gatsby-uc/plugins/pull/310) [`3c854d0`](https://github.com/gatsby-uc/plugins/commit/3c854d0fd7c4bb81c894a08d6dca0ca2c18f7025) Thanks [@renovate](https://github.com/apps/renovate)! - chore(babel): update build tooling
+
+- [#313](https://github.com/gatsby-uc/plugins/pull/313) [`60fecbc`](https://github.com/gatsby-uc/plugins/commit/60fecbc600ce57bf82887a78f4e4d9a430b35f00) Thanks [@renovate](https://github.com/apps/renovate)! - fix(packages): update non-major dependency versions
+
+## 0.11.0
+
+### Minor Changes
+
+- [#306](https://github.com/gatsby-uc/plugins/pull/306) [`c109eb2`](https://github.com/gatsby-uc/plugins/commit/c109eb284913f00c05423804e3de888724848409) Thanks [@moonmeister](https://github.com/moonmeister)! - We've changed the default redirect codes to 307/308 from 301/302. See the redirects docs for more info. This won't break most use cases, unless you were expecting a specific response code. You may uses Gatsby's "statusCode" field to explicitly set the satus code back to 301/302 when creating the redirect.
+
+### Patch Changes
+
+- [#306](https://github.com/gatsby-uc/plugins/pull/306) [`c109eb2`](https://github.com/gatsby-uc/plugins/commit/c109eb284913f00c05423804e3de888724848409) Thanks [@moonmeister](https://github.com/moonmeister)! - feat: Changed redirects to respond on any HTTP medthod, not just GET.
+
+## 0.10.0
+
+### Minor Changes
+
+- [#303](https://github.com/gatsby-uc/plugins/pull/303) [`bae3266`](https://github.com/gatsby-uc/plugins/commit/bae326612720b00116aea0928fc84a01a328fbb7) Thanks [@renovate](https://github.com/apps/renovate)! - Bumping dependencies to match Gatsby v5 related changes. We will only be testing against Gatsby v5, so there's no promisses for Gatsby v4, though there's no known breaking changes.
+
+### Patch Changes
+
+- [#305](https://github.com/gatsby-uc/plugins/pull/305) [`97af0d6`](https://github.com/gatsby-uc/plugins/commit/97af0d667d8f6e5265773f9cdb8eb0a184b9a6fa) Thanks [@moonmeister](https://github.com/moonmeister)! - ADded ESLint configs and updated packages to lint rules. Don't expect any functional changes but code was changed. Please open an issue if you notice any change in behavior.
+
+- [#303](https://github.com/gatsby-uc/plugins/pull/303) [`bae3266`](https://github.com/gatsby-uc/plugins/commit/bae326612720b00116aea0928fc84a01a328fbb7) Thanks [@renovate](https://github.com/apps/renovate)! - Adding Gatsby v5 to peer dependencies now that testing has been done.
+
+- [#288](https://github.com/gatsby-uc/plugins/pull/288) [`0a047a8`](https://github.com/gatsby-uc/plugins/commit/0a047a8a241c82205b7ac43abcb7f3b9ca5b97a0) Thanks [@moonmeister](https://github.com/moonmeister)! - chore(repo): node 18 version bumps and testing
+
+## 0.9.8
+
+### Patch Changes
+
+- [#300](https://github.com/gatsby-uc/plugins/pull/300) [`2eacee4`](https://github.com/gatsby-uc/plugins/commit/2eacee4914a036372fcb8751be0d1b40fac6a5e2) Thanks [@moonmeister](https://github.com/moonmeister)! - Fix: bugs arround matching certain paths related to wildcard and parametric SSR routes. #289.
+  Fix: implemented some more consistent use and parsing of matchPaths to support native gatsby naming that is window ssompatible. #270
+
+## 0.9.7
+
+### Patch Changes
+
+- [#292](https://github.com/gatsby-uc/plugins/pull/292) [`4ca97f9`](https://github.com/gatsby-uc/plugins/commit/4ca97f9ae833b719d67f02ae2af0c9313549fea8) Thanks [@tsdexter](https://github.com/tsdexter)! - support colons in redirect `toPath`s
+
 ## 0.9.6
 
 ### Patch Changes

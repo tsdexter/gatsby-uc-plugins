@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
-import { removeQueryParmsFromUrl, buildUrlFromParams } from "../utils/routes";
+import { removeQueryParmsFromUrl, buildRedirectUrlFromParameters } from "../utils/routes";
 
 import type { FastifyPluginAsync } from "fastify";
 import type { IRedirect } from "gatsby/dist/redux/types";
@@ -8,7 +8,7 @@ import type { IRedirect } from "gatsby/dist/redux/types";
 function getResponseCode(redirect: IRedirect): StatusCodes {
   return (
     redirect.statusCode ||
-    (redirect.isPermanent ? StatusCodes.MOVED_PERMANENTLY : StatusCodes.MOVED_TEMPORARILY)
+    (redirect.isPermanent ? StatusCodes.PERMANENT_REDIRECT : StatusCodes.TEMPORARY_REDIRECT)
   );
 }
 
@@ -44,22 +44,25 @@ export const handleRedirects: FastifyPluginAsync<{
     if (!alreadyRegisterd.has(cleanFromPath)) {
       isCleanedPath && alreadyRegisterd.add(cleanFromPath);
 
-      fastify.get<{
+      fastify.all<{
         Params: {
-          [s: string]: any;
+          [s: string]: string;
         };
         Querystring: {
-          [s: string]: any;
+          [s: string]: string;
         };
-      }>(cleanFromPath, { config: {} }, (req, reply) => {
+      }>(cleanFromPath, { config: {} }, (request, reply) => {
         reply.appendModuleHeader("Redirects");
 
-        if (isCleanedPath && queryStringHandlers[req.url]) {
-          redirect = queryStringHandlers[req.url];
+        if (isCleanedPath && queryStringHandlers[request.url]) {
+          redirect = queryStringHandlers[request.url];
           responseCode = getResponseCode(redirect);
         }
 
-        const toUrl = buildUrlFromParams(redirect.toPath, { ...req.params, ...req.query });
+        const toUrl = buildRedirectUrlFromParameters(redirect.toPath, {
+          ...request.params,
+          ...request.query,
+        });
 
         reply.code(responseCode).redirect(toUrl);
       });

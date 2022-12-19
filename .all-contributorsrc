@@ -69,7 +69,10 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/35560568?v=4",
       "profile": "https://robinmetral.com/",
       "contributions": [
-        "plugin"
+        "plugin",
+        "code",
+        "doc",
+        "ideas"
       ]
     },
     {
@@ -107,6 +110,46 @@
       "profile": "https://github.com/klyngen",
       "contributions": [
         "code"
+      ]
+    },
+    {
+      "login": "codercatdev",
+      "name": "Alex Patterson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3102249?v=4",
+      "profile": "http://alexpatterson.dev/",
+      "contributions": [
+        "code",
+        "plugin"
+      ]
+    },
+    {
+      "login": "osiux",
+      "name": "Eduardo Reveles",
+      "avatar_url": "https://avatars.githubusercontent.com/u/204463?v=4",
+      "profile": "https://www.osiux.ws/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "MichaelDeBoey",
+      "name": "Michaël De Boey",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6643991?v=4",
+      "profile": "https://michaeldeboey.be/",
+      "contributions": [
+        "code",
+        "doc",
+        "tool"
+      ]
+    },
+    {
+      "login": "robinske",
+      "name": "Kelley Robinson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3673341?v=4",
+      "profile": "https://github.com/robinske",
+      "contributions": [
+        "code",
+        "doc"
       ]
     }
   ],

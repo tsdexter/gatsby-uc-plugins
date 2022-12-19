@@ -58,7 +58,7 @@ module.exports = {
 
 # Serving your site
 
-Node and Fastify are great for building application specific web servers but generally should not be used on the edge. Meaning, most folks will use a fully fledged web server (e.g. [Nginx](https://www.nginx.com/) or [Caddy](https://caddyserver.com/) that handles traffic before passing it back to the Node server. This edge server may handle caching, TLS/SSL, load balancing, compression, etc. Then the Node server only worries about the application. A CDN (e.g. Fastly or CloudFlare ) is also often used for performance and scalability and may be use in place of the edge server, though this may be less secure.
+Node and Fastify are great for building application specific web servers but generally should not be used on the edge. Meaning, most folks will use a fully fledged web server (e.g. [Nginx](https://www.nginx.com/) or [Caddy](https://caddyserver.com/) that handles traffic before passing it back to the Node server. This edge server may handle caching, TLS/SSL, load balancing, compression, etc. Then the Node server only worries about the application. A CDN (e.g. Fastly or CloudFlare ) is also often used for performance and scalability.
 
 ## Server CLI (expected)
 
@@ -99,12 +99,31 @@ export GATSBY_SERVER_LOG_LEVEL=debug
 
 ### Logging
 
-By default only basic info is logged along with warnings or errors. By setting the logging level to `debug` you'll also enable Fastify's default [request logging](https://www.fastify.io/docs/latest/Logging/) which is usually enabled for the `info` level.
+For info on logging see Fastify's [documentation on logging](https://www.fastify.io/docs/latest/Reference/Logging/).
 
-For prettier logging to console set the `NODE_ENV` envrionment variable to `development`. This should not be used in production due to performance concerns. e.g.
+## Fastify Server Options
 
-```
-NODE_ENV=development yarn start
+You may directly [configure the Fastify server](https://www.fastify.io/docs/latest/Reference/Server/#factory) from the plugin options in Gatsby config. While many options fastify provides are safe to modify, it's very possible to break your server with these as well, test well. Outside the defaults any values passed are not type checked by Gatsby for compatibility, make sure you are passing valid values as defined in the [Fastify server factory docs](https://www.fastify.io/docs/latest/Reference/Server/#factory).
+
+```js
+module.exports = {
+  /* Site config */
+  plugins: [
+    /* Rest of the plugins */
+    {
+      resolve: `gatsby-plugin-fastify`,
+      /* Default option value shown */
+      options: {
+        fastify: {
+          logger: { level: /* defaults to info by CLI params*/ },
+          ignoreTralingSlash: true,
+          maxParamLength: 500,
+          // for complete options see https://www.fastify.io/docs/latest/Reference/Server/#factory
+        },
+      },
+    },
+  ],
+};
 ```
 
 ## Features
@@ -131,7 +150,7 @@ module.exports = {
 };
 ```
 
-## Gatsby Image CDN (BETA)
+### Gatsby Image CDN (BETA)
 
 > **BETA:** This feature is under going active development to fix bugs and extend functionality by the Gatsby team. I'm releasing this feature here with compatability for `gatsby@4.12.1`, `gatsby-source-wordpres@6.12.1`, and `gatsby-source-contentful@7.10.0` No guarantee it works on newer or older versions.
 
@@ -158,7 +177,11 @@ createRedirect({
 
 ### Gatsby Redirects
 
-Our implementation supports several examples as shown by [Gatsby Docs](https://www.gatsbyjs.com/docs/how-to/cloud/working-with-redirects-and-rewrites/).
+We support the use of `statusCode` but do not currently support `conditions`, `ignoreCase`, or `force` as discussed in the [`createRedirect` docs](https://www.gatsbyjs.com/docs/reference/config-files/actions/#createRedirect).
+
+For various reasons discussed in [this article](https://kinsta.com/knowledgebase/307-redirect/), the `isPermanent` boolean toggles HTTP `307 Temporray Redirect` and `308 Permanent Redirect` instead of `301 Moved Permanently` and `302 Found`. If you need to use `statusCode` onyour redirects to explicitly set the response code.
+
+Our implementation supports dynamic redirects as shown by [Gatsby Cloud Docs](https://www.gatsbyjs.com/docs/how-to/cloud/working-with-redirects-and-rewrites/).
 
 Basic, splat, wildcard, and Querystring splat redirects should all work. e.g. :
 
@@ -199,7 +222,7 @@ createRedirect({
   toPath: "/file.pdf",
 });
 
-// These worn't work
+// These will not work
 createRedirect({
   fromPath: "/redirect-query-specific?id=2&example=:example",
   toPath: "/:example/file.pdf",
@@ -210,7 +233,7 @@ createRedirect({
 });
 ```
 
-> **Note:** While These combos don't currently work it's not imposible to implement such a feature. If you need this feature please consider contributing.
+> **Note:** While these combos don't currently work it's not imposible to implement such a feature. If you need this feature please consider contributing.
 
 ### Gatsby Functions
 
@@ -220,8 +243,6 @@ Gatsby's [function docs](https://www.gatsbyjs.com/docs/reference/functions/getti
 
 Because we're not using Express or Gatsby's own cloud offering functions will need to use Fastify's own [`Request`](https://www.fastify.io/docs/latest/Reference/Request/) and [`Reply`](https://www.fastify.io/docs/latest/Reference/Reply/) API.
 
-### TypeScript
-
 ```ts
 import type { FastifyRequest, FastifyReply } from "fastify";
 
@@ -229,3 +250,7 @@ export default function handler(req: FastifyRequest, res: FastifyReply) {
   res.send(`I am TYPESCRIPT`);
 }
 ```
+
+### Gatsby Routing
+
+We have implemented a compatability layer to support the Gatsby flavor of routing for [Gatsby Functions](https://www.gatsbyjs.com/docs/reference/functions/routing/) and [File System Routing API](https://www.gatsbyjs.com/docs/reference/routing/file-system-route-api/#syntax-client-only-routes). This should be transparent and if you follow the Gatsby docs for routing we should now support all those modes. This very well might not be perfect, if you have issues with routing please file a bug with a reproduction.
