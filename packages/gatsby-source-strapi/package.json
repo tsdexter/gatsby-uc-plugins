@@ -1,6 +1,6 @@
 {
   "name": "gatsby-source-strapi",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "Gatsby source plugin for building websites using Strapi as a data source",
   "keywords": [
     "gatsby",
@@ -32,7 +32,7 @@
   "dependencies": {
     "axios": "0.27.2",
     "commonmark": "^0.30.0",
-    "gatsby-source-filesystem": "^5.3.1",
+    "gatsby-source-filesystem": "^5.7.0",
     "lodash": "^4.17.21",
     "qs": "^6.11.0"
   },
@@ -40,8 +40,8 @@
     "build": "babel src --out-dir dist"
   },
   "devDependencies": {
-    "@babel/cli": "7.20.7",
-    "@babel/core": "7.20.7"
+    "@babel/cli": "7.21.0",
+    "@babel/core": "7.21.0"
   },
   "peerDependencies": {
     "gatsby": "^4.0.0 || ^5.0.0",
